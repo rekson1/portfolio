@@ -14,7 +14,7 @@ const nextConfig = {
   // basePath: "/your-repo-name",
   
   // Ensure trailing slashes for static hosting compatibility
-  trailingSlash: true,
+
 };
 
 export default nextConfig;
