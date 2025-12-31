@@ -15,7 +15,25 @@ const config: Config = {
         "turbonite-highlight": "#8C8279",
       },
       fontFamily: {
-        sans: ["var(--font-inter)", "system-ui", "sans-serif"],
+        // PorscheNext as primary, with system fallbacks (no Arial)
+        sans: ["PorscheNext", "system-ui", "-apple-system", "BlinkMacSystemFont", "sans-serif"],
+        porsche: ["PorscheNext", "system-ui", "-apple-system", "sans-serif"],
+      },
+      fontWeight: {
+        thin: "100",
+        normal: "400",
+        semibold: "600",
+        bold: "700",
+      },
+      letterSpacing: {
+        'porsche': '0.1em',
+        'wider': '0.15em',
+        'widest': '0.25em',
+      },
+      opacity: {
+        'secondary': '1',
+        'thin': '1',
+        'muted': '1',
       },
     },
   },

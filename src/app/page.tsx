@@ -12,19 +12,29 @@ import {
 export default function Home() {
   return (
     <>
-      {/* Global atmospheric background - fixed */}
+      {/* ═══════════════════════════════════════════════════════════════════════
+          TAYCAN LAYERING SYSTEM - Z-Index Stack
+          ═══════════════════════════════════════════════════════════════════════
+          z-0:  BackgroundCanvas (atmospheric effects)
+          z-10: Hero Text (behind plane in 3D space)
+          z-20: AeroWireframe (SR-71 flies OVER text)
+          z-30: Foreground UI (Dock, About, etc.)
+      */}
+
+      {/* Layer 0: Global atmospheric background */}
       <BackgroundCanvas />
 
-      {/* SR-71 Blackbird 3D experience - fixed, scroll-reactive */}
-      <div className="fixed inset-0 z-[1] pointer-events-none">
+      {/* Layer 20: SR-71 Blackbird 3D experience - flies OVER hero text */}
+      <div className="fixed inset-0 z-20 pointer-events-none">
         <AeroWireframe className="w-full h-full" />
       </div>
 
-      {/* Floating navigation dock */}
+      {/* Layer 60: Floating navigation dock (always on top) */}
       <FloatingDock />
 
-      {/* Main content - flows over background */}
-      <main className="relative z-10">
+      {/* Layer 30: Main content - flows over background, under plane initially */}
+      <main className="relative z-30">
+        {/* Hero is z-10 internally so plane flies over it */}
         <Hero />
         <About />
         <FlyingQuote />

@@ -7,6 +7,14 @@ import ResumeModal from "./ResumeModal";
 
 const appleEase = [0.16, 1, 0.3, 1] as const;
 
+// ═══════════════════════════════════════════════════════════════════════════
+// POSITION CONFIGURATION - Adjust these to reposition the Contact section
+// ═══════════════════════════════════════════════════════════════════════════
+const POSITION_CONFIG = {
+  x: 0,    // Horizontal offset (positive = right, negative = left)
+  y: 0,    // Vertical offset (positive = down, negative = up)
+};
+
 export default function Contact() {
   const [isResumeOpen, setIsResumeOpen] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
@@ -31,13 +39,14 @@ export default function Contact() {
     },
   };
 
+  // Fly-in from right animation
   const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
+    hidden: { opacity: 0, x: 100 },
     visible: {
       opacity: 1,
-      y: 0,
+      x: 60,
       transition: {
-        duration: 0.7,
+        duration: 0.9,
         ease: appleEase,
       },
     },
@@ -48,17 +57,21 @@ export default function Contact() {
       <section 
         ref={sectionRef}
         id="contact" 
-        className="relative min-h-screen flex items-center justify-center py-20 sm:py-32"
+        className="relative min-h-screen flex items-center py-20 px-20 sm:py-32"
       >
-        {/* Subtle border accent */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-px h-32 bg-gradient-to-b from-transparent via-turbonite-base/20 to-transparent" />
+        {/* Subtle border accent - moved to left */}
+        <div className="absolute top-0 left-8 md:left-12 lg:left-16 w-px h-32 bg-gradient-to-b from-transparent via-turbonite-base/20 to-transparent" />
 
         <motion.div
-          className="relative container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl text-center"
+          className="relative container mx-auto px-4 sm:px-6 md:px-12 lg:px-16 max-w-4xl text-left ml-0 lg:ml-0 lg:mr-auto"
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-50px" }}
+          viewport={{ once: true, margin: "-20px" }}
+          style={{
+            x: POSITION_CONFIG.x,
+            y: POSITION_CONFIG.y,
+          }}
         >
         {/* Section label with parallax */}
         <motion.p
@@ -80,13 +93,13 @@ export default function Contact() {
 
           {/* Divider */}
           <motion.div
-            className="mx-auto w-20 sm:w-24 h-px bg-gradient-to-r from-transparent via-turbonite-highlight to-transparent mb-6 sm:mb-8"
+            className="w-20 sm:w-24 h-px bg-gradient-to-r from-transparent via-turbonite-highlight to-transparent mb-6 sm:mb-8"
             variants={itemVariants}
           />
 
           {/* Description */}
           <motion.p 
-            className="text-turbonite-base/80 text-base sm:text-lg md:text-xl leading-relaxed max-w-2xl mx-auto mb-8 sm:mb-12 px-2"
+            className="font-porsche text-turbonite-highlight text-base sm:text-lg md:text-xl leading-relaxed max-w-2xl mb-8 sm:mb-12"
             variants={itemVariants}
           >
             I am currently seeking internship opportunities in automotive, electromechanical, and aerospace fields. Let&apos;s connect!
@@ -99,7 +112,7 @@ export default function Contact() {
           >
             <motion.a
               href="mailto:evansie485@gmail.com"
-              className="inline-block text-lg sm:text-2xl md:text-3xl text-engineering-white hover:text-turbonite-highlight transition-colors duration-300 tracking-wide cursor-pointer break-all sm:break-normal"
+              className="font-porsche inline-block text-lg sm:text-2xl md:text-3xl text-engineering-white/80 hover:text-turbonite-highlight transition-colors duration-300 tracking-wide cursor-pointer break-all sm:break-normal"
               whileHover={{ scale: 1.02 }}
               transition={{ duration: 0.2 }}
             >
@@ -109,7 +122,7 @@ export default function Contact() {
 
           {/* Action links - LinkedIn & Resume */}
           <motion.div
-            className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-8 md:gap-12"
+            className="flex flex-col sm:flex-row items-start sm:items-center gap-6 sm:gap-8 md:gap-12"
             variants={itemVariants}
           >
             <motion.a
@@ -137,7 +150,7 @@ export default function Contact() {
               transition={{ duration: 0.2 }}
             >
               <svg 
-                className="w-4 h-4" 
+                className="w-0 h-4" 
                 fill="none" 
                 viewBox="0 0 24 24" 
                 stroke="currentColor" 
@@ -149,20 +162,20 @@ export default function Contact() {
             </motion.button>
           </motion.div>
 
-          {/* Footer */}
+          
           <motion.div 
             className="mt-20 sm:mt-32 pt-8 sm:pt-12 border-t border-white/5"
             variants={itemVariants}
           >
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
               <p className="text-[9px] sm:text-[10px] font-mono tracking-[0.15em] sm:tracking-[0.2em] text-turbonite-base/40 uppercase">
-                © 2025 Evan Sie
+                
               </p>
               <p className="text-[9px] sm:text-[10px] font-mono tracking-[0.15em] sm:tracking-[0.2em] text-turbonite-base/40 uppercase">
                 
               </p>
               <p className="text-[9px] sm:text-[10px] font-mono tracking-[0.15em] sm:tracking-[0.2em] text-turbonite-base/40 uppercase">
-                Dallas, TX
+                
               </p>
             </div>
           </motion.div>

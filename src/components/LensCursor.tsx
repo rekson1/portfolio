@@ -112,9 +112,9 @@ export default function LensCursor() {
         break;
       case "text":
         // I-beam shape for text
-        width.set(2);
-        height.set(28);
-        borderRadius.set(0);
+        width.set(3);
+        height.set(27);
+        borderRadius.set(2);
         scale.set(1);
         break;
       default:
@@ -140,7 +140,7 @@ export default function LensCursor() {
         }}
       >
         <motion.div
-          className="w-full h-full bg-white"
+          className="w-full h-full bg-engineering-white/90"
           style={{ 
             borderRadius: "inherit",
           }}

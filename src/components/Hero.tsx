@@ -24,10 +24,10 @@ function TechnicalDataPoint({
 
   return (
     <motion.div 
-      className={`absolute ${positionClasses[position]} font-mono text-[10px] text-turbonite-base/40 uppercase tracking-wider z-20`}
+      className={`absolute ${positionClasses[position]} font-mono text-[10px] text-turbonite-base/40 uppercase tracking-wider z-[5]`}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ delay: 1.2, duration: 0.8, ease: appleEase }}
+      transition={{ delay: 2.0, duration: 0.8, ease: appleEase }}
     >
       <div className="text-turbonite-highlight/30 mb-1">{label}</div>
       <div className="text-turbonite-base/50">{value}</div>
@@ -45,10 +45,10 @@ function Crosshair({ position }: { position: "top-left" | "top-right" | "bottom-
 
   return (
     <motion.div 
-      className={`absolute ${positionClasses[position]} text-turbonite-base/15 font-mono text-lg z-10`}
+      className={`absolute ${positionClasses[position]} text-turbonite-base/15 font-mono text-lg z-[5]`}
       initial={{ opacity: 0, scale: 0.5 }}
       animate={{ opacity: 1, scale: 1 }}
-      transition={{ delay: 1.4, duration: 0.6, ease: appleEase }}
+      transition={{ delay: 2.2, duration: 0.6, ease: appleEase }}
     >
       +
     </motion.div>
@@ -59,16 +59,16 @@ function ScrollIndicator() {
   const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => setExpanded(true), 1500);
+    const timer = setTimeout(() => setExpanded(true), 2500);
     return () => clearTimeout(timer);
   }, []);
 
   return (
     <motion.div
-      className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center z-20"
+      className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center z-[5]"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ delay: 1.8, duration: 0.8, ease: appleEase }}
+      transition={{ delay: 2.5, duration: 0.8, ease: appleEase }}
     >
       <span className="text-[8px] font-mono tracking-[0.25em] text-turbonite-base/40 uppercase mb-3">
         Scroll
@@ -116,15 +116,11 @@ export default function Hero() {
       opacity: 1,
       transition: {
         staggerChildren: 0.15,
-        delayChildren: 0.3,
+        delayChildren: 1.5, // 1.5s delay - plane flies in first
       },
     },
   };
 
-  // -----
-  // Add a slight 1s delay before the main text shows up
-  // Adjust "delay" in transition for the visible state for 1s pause before animating
-  // -----
   const itemVariants = {
     hidden: { opacity: 0, y: 40 },
     visible: {
@@ -132,7 +128,6 @@ export default function Hero() {
       y: 0,
       transition: {
         duration: 1,
-// Added 1s delay before animation starts
         ease: appleEase,
       },
     },
@@ -142,9 +137,9 @@ export default function Hero() {
     <section 
       ref={heroRef}
       id="hero" 
-      className="relative h-screen flex items-center justify-center overflow-hidden"
+      className="relative h-screen flex items-center justify-center overflow-hidden bg-transparent"
     >
-      {/* SVG Grid Background */}
+      {/* SVG Grid Background - z-0 */}
       <div className="absolute inset-0 pointer-events-none z-0">
         <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
           <defs>
@@ -161,7 +156,7 @@ export default function Hero() {
         </svg>
       </div>
 
-      {/* Spotlight effect - GPU accelerated, throttled position */}
+      {/* Spotlight effect - z-[1] */}
       <div 
         className="absolute inset-0 pointer-events-none z-[1] transform-gpu"
         style={{
@@ -170,19 +165,19 @@ export default function Hero() {
         }}
       />
 
-      {/* Technical data points */}
+      {/* Technical data points - z-[5] */}
       <TechnicalDataPoint position="top-left" label="" value="   // DALLAS, TX" />
       <TechnicalDataPoint position="top-right" label="Ver" value="v2025.12.25" />
       <TechnicalDataPoint position="bottom-left" label="" value="" />
       <TechnicalDataPoint position="bottom-right" label="Lockheed" value="//SR-71 Blackbird A" />
 
-      {/* Crosshairs */}
+      {/* Crosshairs - z-[5] */}
       <Crosshair position="top-left" />
       <Crosshair position="top-right" />
       <Crosshair position="bottom-left" />
       <Crosshair position="bottom-right" />
 
-      {/* Main Typography */}
+      {/* Main Typography - z-10 (plane at z-20 flies OVER this) */}
       <motion.div
         className="relative text-center z-10 px-4 sm:px-6 w-full flex flex-col items-center justify-center"
         variants={containerVariants}
@@ -198,12 +193,12 @@ export default function Hero() {
         </motion.p>
 
         <motion.h1
-          className="relative text-5xl sm:text-7xl md:text-9xl lg:text-[12rem] font-bold uppercase tracking-tighter text-engineering-white leading-none cursor-pointer group z-[5] text-center"
+          className="relative text-5xl sm:text-7xl md:text-9xl lg:text-[12rem] font-bold uppercase tracking-tight text-engineering-white leading-none cursor-pointer group text-center"
           variants={itemVariants}
           whileHover={{ 
             scale: 1.015, 
             y: -4,
-            opacity: 0.3,
+            opacity: 0.2,
           }}
           transition={{ duration: 0.4, ease: appleEase }}
           onClick={() => {

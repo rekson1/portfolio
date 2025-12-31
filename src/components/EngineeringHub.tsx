@@ -11,15 +11,17 @@ interface Project {
   description: string;
   tags: string[];
   content: string;
-  image: string; // Path to project image (e.g., "/projects/my-image.jpg")
+  image: string;           // Main image (for modal)
+  gifUrl?: string;         // Optional GIF for grid preview
+  galleryImages?: string[]; // Optional gallery images for modal
 }
 
 const appleEase = [0.16, 1, 0.3, 1] as const;
 
-// Smooth easing for layout animations - prevents header stutter
+// Smooth easing for layout animations
 const layoutTransition = {
   duration: 0.5,
-  ease: [0.32, 0.72, 0, 1] as const, // Smooth snap easing
+  ease: [0.32, 0.72, 0, 1] as const,
 };
 
 const projects: Project[] = [
@@ -31,6 +33,8 @@ const projects: Project[] = [
     description: "A solar powered keychain with a BLE chip that controls your music",
     tags: ["ESP32", "SOLAR", "3D Printing"],
     image: "/projects/ipod-keychain.jpg",
+    gifUrl: "/projects/attachment.gif", // Add GIF URL when available: "/projects/ipod-keychain.gif"
+    galleryImages: undefined, // Add gallery: ["/projects/ipod-1.jpg", "/projects/ipod-2.jpg"]
     content: `This project involved designing and building a stylish yet functional keychain using a BLE chip that connects to your phone and a solar panel to power the device.
 
 **Key Achievements:**
@@ -49,17 +53,15 @@ This project was a fun challenge to see how small and low powered I could make a
     description: "Converting my old Casio calculator to take LiPo batteries instead of AAA",
     tags: ["Soldering", "LiPo", "Modification"],
     image: "/projects/calculator-mod.jpg",
+    gifUrl: undefined,
+    galleryImages: undefined,
     content: `I had an old Casio FX CG50 calculator that takes AAA batteries. I found that this was quite wasteful 
     and got expensive over the 5 years I had it. I bought a 1500mAh LiPo battery and found a charge controller (Adafruit Powerboost 500) that would ensure the LiPo stayed within 3.2V to 4.2V.
     This was great because the charge controller also outputs 5V, which the calculator requires since it was designed to take AAA batteries.
     I had to make room for the LiPo battery by removing the AAA battery compartment and the AAA battery holder. This required careful dremel work and measurements to make sure all the components fit.
     There were no wiring diagrams of this calculator anywhere online, so I had to reverse engineer the PCBs by using a multimeter to measure voltages at different traces.
     I eventually found a spot where I could solder the inputs of the powerboost to the inputs of the calculator which means I could use the calculator's built in mini-USB port to charge.
-    Finally I soldered the 5V output to the + and - terminals of the calculator where the AAA batteries used to be.
-  
-
-
-`,
+    Finally I soldered the 5V output to the + and - terminals of the calculator where the AAA batteries used to be.`,
   },
   {
     id: "Mirror",
@@ -69,6 +71,8 @@ This project was a fun challenge to see how small and low powered I could make a
     description: "Modyfying a fitness mirror to display time, weather, and ETA to UTD",
     tags: ["Raspberry Pi", "Python", "Zsh/Bash"],
     image: "/projects/mirror.JPG",
+    gifUrl: undefined,
+    galleryImages: undefined,
     content: `I had large fitness mirror which sat unsused in my room because the software it ran on was discontinued years ago.
    Since the mirror already
     had a giant TV screen inside it, I had an idea to reporgram it to display time, weather, ETA to UTD and other useful information. After some research I discovered the company that made the mirror (formally called Mirror) was aquired by Lululemon but has since been discontinued. I also found through a Github repository
@@ -97,6 +101,8 @@ the webcam hardware and the lens to repurpose for a new project, and maybe one d
     description: "A 3 inch freestyle FPV drone ",
     tags: ["Betaflight", "Soldering", "UAV Piloting"],
     image: "/projects/drone.jpg",
+    gifUrl: undefined,
+    galleryImages: undefined,
     content: `This was less of a technical achievement and more of a personal hobby where (through typical enginering fashion of trial and error) I learned most of the practical, hands-on engineering skills I use in most of my other projects.
 
 
@@ -114,23 +120,6 @@ I learned all about antenna theory, RF design, and how to build a radio system t
 piloting experience however, using VR like goggles I would be able to see the drone's live feed in real time. Futhermore, the drone's flight controller(and thus its flight dynamics) is very "manual" (unlike a typical drone found in a toy section of a Walmart), it is akin to driving a manual transmission car. It takes lots of practice and coordination not to stall the engine, which in this case is not to destroy hundreds of dollars and countless hours of work. I find this to be a useful skill
 due to the rapid advancements of UAVs in the defense and civilian industry, which requires skilled pilots to operate successfully.`,
   },
-//   {
-//     id: "3d-printed-drone",
-//     title: "3D Printed Drone",
-//     date: "2024.03",
-//     span: "default",
-//     description: "Custom FPV racing drone with 3D printed frame",
-//     tags: ["Additive Mfg", "Flight Dynamics", "PID Tuning"],
-//     image: "/projects/drone.jpg", // Replace with your image
-//     content: `Designed and manufactured a lightweight FPV racing drone with a custom 3D printed carbon-fiber reinforced frame.
-
-// **Specifications:**
-// - Sub-250g all-up weight
-// - Custom Betaflight PID tuning
-// - 4S power system, 5" propellers
-// - Integrated antenna mounts and camera protection
-// - Top speed: 120+ km/h`,
-//   },
 ];
 
 function TrafficLights() {
@@ -159,6 +148,9 @@ function ProjectCard({ project, onExpand, index, isAnyExpanded }: ProjectCardPro
     tall: "sm:row-span-2 md:row-span-2",
   };
 
+  // Use GIF for preview if available, otherwise use main image
+  const previewImage = project.gifUrl || project.image;
+
   return (
     <motion.article
       className={`
@@ -166,7 +158,7 @@ function ProjectCard({ project, onExpand, index, isAnyExpanded }: ProjectCardPro
         bg-deep-black rounded-lg overflow-hidden
         ${spanClasses[project.span]}
       `}
-      onClick={onExpand}
+      onClick={onExpand}  
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       layoutId={`project-${project.id}`}
@@ -185,7 +177,7 @@ function ProjectCard({ project, onExpand, index, isAnyExpanded }: ProjectCardPro
         boxShadow: isHovered ? "0 0 40px -5px rgba(140, 130, 121, 0.4)" : "none",
       }}
     >
-      {/* Title Bar - NO separate layoutId */}
+      {/* Title Bar */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-white/5 bg-white/[0.02]">
         <TrafficLights />
         <span className="text-xs tracking-wider text-engineering-white/70 uppercase font-medium">
@@ -194,28 +186,27 @@ function ProjectCard({ project, onExpand, index, isAnyExpanded }: ProjectCardPro
         <div className="w-[52px]" />
       </div>
 
-      {/* Content Area - Fades out when expanding */}
+      {/* Content Area */}
       <motion.div 
         className={`relative flex-1 overflow-hidden ${project.span === "tall" ? "min-h-[400px]" : "min-h-[200px] md:min-h-[220px]"}`}
         animate={{ opacity: isAnyExpanded ? 0 : 1 }}
         transition={{ duration: 0.15 }}
       >
-        {/* Project Image with Zoom Effect */}
+        {/* Project Image/GIF with Zoom Effect */}
         <motion.div
           className="absolute inset-0"
           animate={{ scale: isHovered ? 1.08 : 1 }}
           transition={{ duration: 0.6, ease: appleEase }}
         >
           <img
-            src={project.image}
+            src={previewImage}
             alt={project.title}
             className="w-full h-full object-cover"
             onError={(e) => {
-              // Fallback to gradient if image fails to load
               e.currentTarget.style.display = 'none';
             }}
           />
-          {/* Fallback gradient background (shows if image fails) */}
+          {/* Fallback gradient */}
           <div 
             className="absolute inset-0 -z-10"
             style={{
@@ -228,21 +219,25 @@ function ProjectCard({ project, onExpand, index, isAnyExpanded }: ProjectCardPro
           />
         </motion.div>
 
-        {/* Dark overlay for text readability */}
-        <div 
-          className="absolute inset-0 bg-gradient-to-t from-deep-black via-deep-black/60 to-deep-black/20 pointer-events-none"
-        />
+        {/* Dark overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-deep-black via-deep-black/60 to-deep-black/20 pointer-events-none" />
 
         {/* Tags */}
         <div className="absolute top-3 left-3 flex flex-wrap gap-1.5 z-10">
           {project.tags.slice(0, 2).map((tag) => (
             <span 
               key={tag}
-              className="px-2 py-0.5 text-[9px] font-mono tracking-wider text-engineering-white/80 bg-deep-black/60 backdrop-blur-sm rounded border border-white/10 uppercase"
+              className="px-2 py-0.5 text-[9px] font-mono tracking-wider text-engineering-white/1 bg-deep-black/60 backdrop-blur-sm rounded border border-white/10 uppercase"
             >
               {tag}
             </span>
           ))}
+          {/* GIF indicator
+          {project.gifUrl && (
+            <span className="px-2 py-0.5 text-[9px] font-mono tracking-wider text-turbonite-highlight bg-deep-black/60 backdrop-blur-sm rounded border border-turbonite-highlight/30 uppercase">
+              
+            </span>
+          )} */}
         </div>
 
         {/* Bottom content */}
@@ -251,7 +246,6 @@ function ProjectCard({ project, onExpand, index, isAnyExpanded }: ProjectCardPro
             {project.description}
           </p>
           <div className="flex items-center justify-between">
-            {/* Click hint */}
             <motion.span 
               className="text-[10px] font-mono tracking-wider text-turbonite-highlight/70 uppercase"
               animate={{ opacity: isHovered ? 1 : 0 }}
@@ -259,14 +253,13 @@ function ProjectCard({ project, onExpand, index, isAnyExpanded }: ProjectCardPro
             >
               Click to expand →
             </motion.span>
-            {/* Date badge */}
             <span className="px-2 py-1 text-[10px] font-mono tracking-wider text-engineering-white/70 bg-deep-black/60 backdrop-blur-sm rounded border border-white/10">
               {project.date}
             </span>
           </div>
         </div>
 
-        {/* Hover highlight gradient */}
+        {/* Hover highlight */}
         <motion.div 
           className="absolute inset-0 bg-gradient-to-t from-turbonite-highlight/10 via-transparent to-transparent pointer-events-none"
           animate={{ opacity: isHovered ? 1 : 0 }}
@@ -293,7 +286,6 @@ function ExpandedCard({ project, onClose }: ExpandedCardProps) {
     document.addEventListener("keydown", handleEscape);
     document.body.style.overflow = "hidden";
     
-    // Delay content appearance for smooth animation
     const timer = setTimeout(() => setContentVisible(true), 150);
     
     return () => {
@@ -305,7 +297,6 @@ function ExpandedCard({ project, onClose }: ExpandedCardProps) {
 
   const handleClose = () => {
     setContentVisible(false);
-    // Small delay to let content fade out before card shrinks
     setTimeout(onClose, 100);
   };
 
@@ -313,7 +304,7 @@ function ExpandedCard({ project, onClose }: ExpandedCardProps) {
     <>
       {/* Backdrop */}
       <motion.div
-        className="fixed inset-0 bg-deep-black/80 backdrop-blur-sm z-50"
+        className="fixed inset-0 bg-deep-black/40 backdrop-blur-sm z-50"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -321,16 +312,16 @@ function ExpandedCard({ project, onClose }: ExpandedCardProps) {
         onClick={handleClose}
       />
 
-      {/* Expanded card - single layoutId matching the grid card */}
+      {/* Expanded card */}
       <motion.article
-        className="fixed inset-4 md:inset-12 lg:inset-24 z-50 flex flex-col bg-deep-black border border-white/10 rounded-lg overflow-hidden"
+        className="fixed inset-4 md:inset-12 lg:inset-24 z-50 flex flex-col bg-deep-black/20 border border-white/10 rounded-lg overflow-hidden font-porsche"
         layoutId={`project-${project.id}`}
         transition={layoutTransition}
       >
-        {/* Title Bar - same structure as grid card, NO separate layoutId */}
+        {/* Title Bar */}
         <div className="flex items-center justify-between px-4 py-3 border-b border-white/5 bg-white/[0.02] shrink-0">
           <TrafficLights />
-          <span className="text-xs tracking-wider text-engineering-white/70 uppercase font-medium">
+          <span className="text-xs tracking-wider text-engineering-white/70 uppercase font-medium font-porsche">
             {project.title}
           </span>
           <button
@@ -344,7 +335,7 @@ function ExpandedCard({ project, onClose }: ExpandedCardProps) {
           </button>
         </div>
 
-        {/* Expanded content - fades in after layout animation */}
+        {/* Expanded content */}
         <motion.div 
           className="flex-1 overflow-hidden"
           initial={{ opacity: 0 }}
@@ -352,11 +343,8 @@ function ExpandedCard({ project, onClose }: ExpandedCardProps) {
           transition={{ duration: 0.2 }}
         >
           <div className="grid grid-cols-1 lg:grid-cols-2 h-full">
-            {/* Left - Visual area with project image */}
-            <div 
-              className="relative min-h-[300px] lg:min-h-full border-b lg:border-b-0 lg:border-r border-white/5 overflow-hidden"
-            >
-              {/* Project Image */}
+            {/* Left - Main Image */}
+            <div className="relative min-h-[300px] lg:min-h-full border-b lg:border-b-0 lg:border-r border-white/5 overflow-hidden">
               <img
                 src={project.image}
                 alt={project.title}
@@ -366,7 +354,7 @@ function ExpandedCard({ project, onClose }: ExpandedCardProps) {
                 }}
               />
               
-              {/* Fallback gradient background */}
+              {/* Fallback gradient */}
               <div 
                 className="absolute inset-0 -z-10"
                 style={{
@@ -378,7 +366,6 @@ function ExpandedCard({ project, onClose }: ExpandedCardProps) {
                 }}
               />
               
-              {/* Subtle overlay for polish */}
               <div className="absolute inset-0 bg-gradient-to-t from-deep-black/40 via-transparent to-deep-black/20 pointer-events-none" />
               
               {/* Grid pattern overlay */}
@@ -394,7 +381,7 @@ function ExpandedCard({ project, onClose }: ExpandedCardProps) {
               />
             </div>
 
-            {/* Right - Blog content */}
+            {/* Right - Content */}
             <div className="p-6 md:p-8 lg:p-10 overflow-y-auto">
               <div className="mb-8">
                 <div className="flex flex-wrap items-center gap-2 mb-4">
@@ -407,13 +394,13 @@ function ExpandedCard({ project, onClose }: ExpandedCardProps) {
                     </span>
                   ))}
                 </div>
-                <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-engineering-white uppercase mb-2">
+                <h2 className="text-2xl md:text-3xl font-porsche tracking-tight text-engineering-white uppercase mb-2">
                   {project.title}
                 </h2>
-                <p className="text-turbonite-base text-sm tracking-wide">
+                <p className="text-sm font-thin text-engineering-white leading-relaxed">
                   {project.description}
                 </p>
-                <div className="mt-4 flex items-center gap-4 text-[11px] font-mono text-turbonite-base/60 uppercase tracking-wider">
+                <div className="mt-4 flex items-center gap-4 text-[10px] font-mono text-turbonite-base uppercase tracking-wider">
                   <span>{project.date}</span>
                   <span className="w-1 h-1 rounded-full bg-turbonite-base/40" />
                   <span>Evan Sie</span>
@@ -422,11 +409,12 @@ function ExpandedCard({ project, onClose }: ExpandedCardProps) {
 
               <div className="w-full h-px bg-gradient-to-r from-turbonite-highlight/50 via-turbonite-base/20 to-transparent mb-8" />
 
+              {/* Content */}
               <div className="prose prose-invert prose-sm max-w-none">
                 {project.content.split("\n\n").map((paragraph, i) => {
                   if (paragraph.startsWith("**") && paragraph.endsWith("**")) {
                     return (
-                      <h3 key={i} className="text-sm font-bold text-engineering-white tracking-wide uppercase mt-6 mb-3">
+                      <h3 key={i} className="text-sm font-porsche tracking-wide uppercase text-engineering-white mt-6 mb-3">
                         {paragraph.replace(/\*\*/g, "")}
                       </h3>
                     );
@@ -435,11 +423,11 @@ function ExpandedCard({ project, onClose }: ExpandedCardProps) {
                     const [title, ...rest] = paragraph.split(":**");
                     return (
                       <div key={i} className="mt-6 mb-3">
-                        <h3 className="text-sm font-bold text-engineering-white tracking-wide uppercase mb-3">
+                        <h3 className="text-sm font-porsche tracking-wide uppercase text-engineering-white mb-3">
                           {title.replace(/\*\*/g, "")}
                         </h3>
                         {rest.length > 0 && (
-                          <p className="text-turbonite-base/80 leading-relaxed text-sm">
+                          <p className="text-sm font-thin text-engineering-white leading-relaxed">
                             {rest.join(":**")}
                           </p>
                         )}
@@ -451,7 +439,7 @@ function ExpandedCard({ project, onClose }: ExpandedCardProps) {
                     return (
                       <ul key={i} className="space-y-2 my-4">
                         {items.map((item, j) => (
-                          <li key={j} className="flex items-start gap-2 text-turbonite-base/80 text-sm">
+                          <li key={j} className="flex items-start gap-2 text-sm font-thin text-engineering-white">
                             <span className="w-1 h-1 rounded-full bg-turbonite-highlight mt-2 shrink-0" />
                             <span>{item.replace("- ", "")}</span>
                           </li>
@@ -460,12 +448,39 @@ function ExpandedCard({ project, onClose }: ExpandedCardProps) {
                     );
                   }
                   return (
-                    <p key={i} className="text-turbonite-base/80 leading-relaxed text-sm mb-4">
+                    <p key={i} className="text-sm font-thin text-engineering-white leading-relaxed mb-4">
                       {paragraph}
                     </p>
                   );
                 })}
               </div>
+
+              {/* Gallery Images */}
+              {project.galleryImages && project.galleryImages.length > 0 && (
+                <div className="mt-8">
+                  <div className="w-full h-px bg-gradient-to-r from-turbonite-highlight/50 via-turbonite-base/20 to-transparent mb-6" />
+                  <p className="font-mono text-[10px] tracking-[0.2em] text-turbonite-highlight uppercase mb-4">
+                    Gallery
+                  </p>
+                  <div className="grid grid-cols-2 gap-3">
+                    {project.galleryImages.map((imgUrl, idx) => (
+                      <div 
+                        key={idx} 
+                        className="relative aspect-video rounded-lg overflow-hidden border border-white/10"
+                      >
+                        <img
+                          src={imgUrl}
+                          alt={`${project.title} gallery ${idx + 1}`}
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                          }}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </motion.div>
@@ -475,7 +490,6 @@ function ExpandedCard({ project, onClose }: ExpandedCardProps) {
 }
 
 function StatsSection() {
-  // Single stat item
   const stats = [
     { value: "10", label: " years of Engineering Projects", suffix: "+" },
   ];
@@ -609,8 +623,8 @@ export default function EngineeringHub() {
             <h2 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold uppercase tracking-tight text-engineering-white">
               Works
             </h2>
-            <div className="mt-4 sm:mt-6 w-24 sm:w-32 h-px bg-gradient-to-r from-turbonite-highlight to-transparent mx-auto sm:mx-0" />
-            <p className="mt-6 sm:mt-8 text-sm sm:text-base text-turbonite-base/70 max-w-xl leading-relaxed mx-auto sm:mx-0">
+            <div className="mt-4 sm:mt-6 w-24 sm:w-32 h-px bg-gradient-to-r from-turbonite-highlight/80 to-transparent mx-auto sm:mx-0 font-porsche" />
+            <p className="mt-6 sm:mt-8 text-sm sm:text-base text-turbonite-base/90 max-w-xl leading-relaxed mx-auto sm:mx-0 font-porsche">
               A collection of recent projects Ive been working on so far. Take a look!
             </p>
           </motion.div>
